@@ -1,0 +1,182 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+typedef struct No{
+    int valor;
+    struct No * prox;
+}No;
+
+typedef struct Lista{
+    No * ini;
+}Lista;
+
+No * newNo(int valor){
+    No * aux = (No *)malloc(sizeof(No));
+    aux->valor = valor;
+    aux->prox = NULL;
+    return aux;
+}
+Lista * newLista(){
+    Lista * aux  = (Lista *)malloc(sizeof(Lista));
+    aux->ini = NULL;
+    return aux;
+}
+
+int isEmpty(Lista *f){
+    return f->ini==NULL;
+}
+
+
+void addFim(Lista *f,int valor){
+    No * no = newNo(valor);
+    if(isEmpty(f)){
+        f->ini = no;
+    }else{
+        No * aux = f->ini;
+        while(aux->prox!=NULL){
+            aux = aux->prox;
+        }
+        aux->prox = no;
+    }
+    
+}
+
+
+int size(Lista *li){
+    int size=0;
+    No * aux = li->ini;
+    while(aux!=NULL){
+        aux=aux->prox;
+        size++;
+    }
+    return size;
+}
+
+void print(Lista *li){
+    No * aux = li->ini;
+    printf("[");
+    while(aux!=NULL){
+        printf("%d",aux->valor);
+        aux = aux->prox;
+        if(aux!=NULL){
+            printf(",");
+        }
+    }
+    printf("] (%d)\n",size(li));
+}
+
+No * get(Lista *li,int pos){
+    if(isEmpty(li)){
+        printf("Fora dos limites da lista\n");
+        exit(0);
+    }
+    No * aux = li->ini;
+    for(int i=0;i<pos;i++){
+        aux = aux->prox;
+        if(aux==NULL){
+            printf("Fora dos limites da lista\n");
+            exit(0);
+        }
+    }
+    return aux;
+}
+
+int removeProximo(No *aux){
+    No * x = aux->prox;
+    if(x==NULL){
+        printf("Fora dos limites da lista\n");
+        exit(0);
+    }
+    int v = x->valor;
+    aux->prox = aux->prox->prox;
+    free(x);
+    return v;
+}
+
+int pop(Lista *li,int pos){
+    if(pos>0){
+        No * aux = get(li, pos-1);
+        return removeProximo(aux);
+    }
+    No * x = li->ini;
+    if(x==NULL){
+        printf("Fora dos limites da lista\n");
+        exit(0);
+    }
+    int v = x->valor;
+    li->ini = li->ini->prox;
+    free(x);
+    return v;
+}
+
+void add(Lista *li, int valor,int pos){
+    No * x = newNo(valor);
+    if(pos==0){
+        x->prox = li->ini;
+        li->ini = x;
+        
+    }else{
+        No * p = get(li,pos-1);
+        x->prox = p->prox;
+        p->prox = x;
+    }
+}
+
+void addOrdenado(Lista *li, int valor){
+    No * x = newNo(valor);
+    if(li->ini==NULL || valor<li->ini->valor){
+        x->prox = li->ini;
+        li->ini = x;
+        
+    }else{
+        No * p = li->ini;
+        while(p->prox!=NULL && p->prox->valor<valor){
+            p=p->prox;
+        }
+        x->prox = p->prox;
+        p->prox = x;
+    }
+}
+
+
+
+
+void set(Lista *li, int valor,int pos){
+    No * aux = get(li,pos);
+    aux->valor=valor;
+}
+
+void concat(Lista *l1, Lista *l2){
+    if(isEmpty(l1)){
+        l1->ini=l2->ini;
+    }else{
+        No * aux = l1->ini;
+        while(aux->prox!=NULL){
+            aux=aux->prox;
+        }
+        aux->prox=l2->ini;
+    }
+}
+
+
+int main(){
+    
+    Lista * li = newLista();
+    addOrdenado(li,1);
+    addOrdenado(li,2);
+    addOrdenado(li,3);
+    addOrdenado(li,0);
+    addOrdenado(li,10);
+    print(li);
+    Lista * li2 = newLista();
+    add(li2,10,0);
+    add(li2,11,1);
+    add(li2,11,2);
+    print(li2);
+    concat(li,li2);
+    print(li);
+    
+}
+

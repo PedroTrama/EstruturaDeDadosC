@@ -67,29 +67,3 @@ int buscaBinaria(int v[],int n,int key){
     }
     return -1;
 }
-
-int repetidos1(int v1[],int n1, int v2[], int n2){
-    int size = 0,valor1;
-    for(int i=0;i<n1;i++){
-        valor1 = v1[i];
-        //buscar valor1 dentro do vetor v2
-        if(buscaSequencial(v2,n2,valor1)>=0){
-                size++;
-        }
-    }
-    return size;
-}
-
-//cte * n2*lg(n2)+cte*n1*log n2 = cte*(n1+n2)lg n2
-int repetidos2(int v1[],int n1, int v2[], int n2){
-    int size = 0,valor1;
-    mergeSort(v2, n2);// Theta(n2 lg n2)
-    for(int i=0;i<n1;i++){ //Theta (n1 log n2)
-        valor1 = v1[i];
-        //buscar valor1 dentro do vetor v2 =  Theta(lg n2)
-        if(buscaBinaria(v2,n2, valor1)>=0){
-                size++;
-        }
-    }
-    return size;
-}
